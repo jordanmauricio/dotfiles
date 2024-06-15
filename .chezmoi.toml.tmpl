@@ -1,0 +1,11 @@
+{{- $email := promptStringOnce . "email" "Email address" -}}
+
+{{ $computerName := output "scutil" "--get" "ComputerName" | trim }}
+
+[data]
+    email = {{ $email | quote }}
+    hostname = {{ $computerName }}
+
+[edit]
+    command = "code"
+    args = ["--wait"]

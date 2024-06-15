@@ -1,0 +1,35 @@
+{{ if eq .chezmoi.os "darwin" -}}
+#!/bin/bash
+
+{{ range .packages.darwin.crates -}}
+cargo install {{ . | quote }}
+{{ end -}}
+{{ range .packages.darwin.nodes -}}
+npm install -g {{ . | quote }}
+{{ end -}}
+
+brew bundle --no-lock --file=/dev/stdin <<EOF
+{{ range .packages.darwin.taps -}}
+tap {{ . | quote }}
+{{ end -}}
+{{ range .packages.darwin.brews -}}
+brew {{ . | quote }}
+{{ end -}}
+{{ range .packages.darwin.casks -}}
+cask {{ . | quote }}
+{{ end -}}
+{{- if ne .chezmoi.hostname "Hephaestus" -}}
+{{ range .packages.darwin.caskspersonal -}}
+cask {{ . | quote }}
+{{ end -}}
+{{ end -}}
+{{- if eq .chezmoi.hostname "Hephaestus" -}}
+{{ range .packages.darwin.caskswork -}}
+cask {{ . | quote }}
+{{ end -}}
+{{ end -}}
+{{ range .packages.darwin.vscode -}}
+vscode {{ . | quote }}
+{{ end -}}
+EOF
+{{ end -}}
