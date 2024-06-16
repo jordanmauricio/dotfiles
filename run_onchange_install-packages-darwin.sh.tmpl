@@ -18,12 +18,12 @@ brew {{ . | quote }}
 {{ range .packages.darwin.casks -}}
 cask {{ . | quote }}
 {{ end -}}
-{{- if ne .chezmoi.hostname "Hephaestus" -}}
+{{- if ne .isWorkLaptop "y" -}}
 {{ range .packages.darwin.caskspersonal -}}
 cask {{ . | quote }}
 {{ end -}}
 {{ end -}}
-{{- if eq .chezmoi.hostname "Hephaestus" -}}
+{{- if ne .isWorkLaptop "n" -}}
 {{ range .packages.darwin.caskswork -}}
 cask {{ . | quote }}
 {{ end -}}

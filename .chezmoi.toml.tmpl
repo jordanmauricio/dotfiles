@@ -1,10 +1,13 @@
 {{- $email := promptStringOnce . "email" "Email address" -}}
 
-{{ $computerName := output "scutil" "--get" "ComputerName" | trim }}
+{{- $givenName := promptStringOnce . "givenName" "Computer name" -}}
+
+{{- $isWorkLaptop := promptStringOnce . "isWorkLaptop" "Is this a work laptop? y/n" -}}
 
 [data]
     email = {{ $email | quote }}
-    hostname = {{ $computerName }}
+    computerName = {{ $givenName | quote }}
+    isWorkLaptop = {{ $isWorkLaptop | quote }}
 
 [edit]
     command = "code"

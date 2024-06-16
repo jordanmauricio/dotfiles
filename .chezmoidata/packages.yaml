@@ -12,6 +12,7 @@ packages:
     - "bat"
     - "coreutils"
     - "croc"
+    - "dockutil"
     - "ffmpeg"
     - "fnm"
     - "gnu-sed"
