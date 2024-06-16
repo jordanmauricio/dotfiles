@@ -26,6 +26,7 @@ zinit ice depth=1; zinit light romkatv/powerlevel10k
 eval "$(/opt/homebrew/bin/brew shellenv)"
 eval "$(zoxide init zsh)"
 eval "$(fzf --zsh)"
+eval "$(fnm env --use-on-cd --version-file-strategy=recursive)"
 
 zinit ice lucid as"program" pick"bin/git-dsf"
 
@@ -49,7 +50,7 @@ zinit cdreplay -q
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
 # Source the dotfiles (order matters)
-for DOTFILE in "$CHEZMOI_HOME"/configs/{functions,aliases}; do
+for DOTFILE in "$CHEZMOI_HOME"/configs/{functions,aliases,inputrc}; do
   [ -f "$DOTFILE" ] && . "$DOTFILE"
 done
 
