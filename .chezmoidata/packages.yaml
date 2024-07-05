@@ -30,6 +30,7 @@ packages:
     - "rmlint"
     - "rsync"
     - "ssh-copy-id"
+    - "sqlite3"
     - "topgrade"
     - "tree"
     - "unar"

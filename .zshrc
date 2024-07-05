@@ -55,8 +55,8 @@ for DOTFILE in "$CHEZMOI_HOME"/configs/{functions,aliases,inputrc}; do
 done
 
 # Keybindings
-bindkey "^p" history-search-backward
-bindkey "^n" history-search-forward
+bindkey "^p" history-beginning-search-backward
+bindkey "^n" history-beginning-search-forward
 
 # History
 HISTSIZE=10000
@@ -77,3 +77,5 @@ zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}'
 zstyle ':completion:*' menu no
 zstyle ':fzf-tab:complete:*' fzf-preview 'ls --color $realpath'
 zstyle ':fzf-tab:complete:__zoxide_z:*' fzf-preview 'ls --color $realpath'
+
+export PATH=/usr/local/opt/sqlite/bin:$PATH
