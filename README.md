@@ -15,6 +15,11 @@ sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply jordanmauricio`
   - Turn on Touch ID
   - Enable SSH Agent
 
+## After Setup
+
+- Configure SSH
+- Manually configure Finder settings
+
 ## Guides
 
 [Chezmoi Templating](https://www.chezmoi.io/user-guide/templating)
