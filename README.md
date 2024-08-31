@@ -18,7 +18,7 @@ sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply jordanmauricio`
 ## After Setup
 
 - Configure SSH
-- Manually configure Finder settings
+- Manually configure remaining Finder settings
 
 ## Guides
 
