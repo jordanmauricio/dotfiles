@@ -2,9 +2,7 @@ packages:
   darwin:
     taps:
     - "homebrew/bundle"
-    - "homebrew/core"
     - "mongodb/brew"
-    - "homebrew/cask"
     - "homebrew/cask-drivers"
     - "homebrew/cask-fonts"
     - "homebrew/cask-versions"
@@ -85,7 +83,6 @@ packages:
     - "dbaeumer.vscode-eslint"
     - "esbenp.prettier-vscode"
     - "DavidAnson.vscode-markdownlint"
-    - "CoenraadS.bracket-pair-colorizer"
     - "github.copilot"
     - "octref.vetur"
     - "redhat.vscode-yaml"
