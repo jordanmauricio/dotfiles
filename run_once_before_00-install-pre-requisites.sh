@@ -2,14 +2,6 @@
 
 set -eu
 
-# Update the OS
-sudo softwareupdate -i -a
-
-# Install Xcode, gets git and make among other things
-if ! command -v git >/dev/null; then
-  xcode-select --install
-fi
-
 # Install curl if it's not already installed
 if ! command -v curl >/dev/null; then
   sudo apt update
