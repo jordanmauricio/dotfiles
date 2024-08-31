@@ -5,6 +5,8 @@ These dotfiles are managed by [Chezmoi](https://www.chezmoi.io/).
 ## Setup new machine
 
 ```bash
+sudo softwareupdate -i -a
+xcode-select --install
 sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply jordanmauricio`
 ```
 
