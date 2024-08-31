@@ -1,14 +1,37 @@
-{{- $email := promptStringOnce . "email" "Email address" -}}
+{{- $name := promptStringOnce . "name" "What's your name?" -}}
 
-{{- $givenName := promptStringOnce . "givenName" "Computer name" -}}
+{{- $email := promptStringOnce . "email" "And email address?" -}}
+
+{{- $workEmail := promptStringOnce . "workEmail" "And your work email address?" -}}
+
+{{- $givenName := promptStringOnce . "givenName" "What do you want to name this machine?" -}}
 
 {{- $isWorkLaptop := promptStringOnce . "isWorkLaptop" "Is this a work laptop? y/n" -}}
 
+{{- $gpgGit := promptStringOnce . "gpgGit" "Copy your gpg key here" -}}
+
+{{- $opItemGPG := promptStringOnce . "opItemGPG" "Copy your 1password item key here" -}}
+
+{{- $gpgPassphrase := promptStringOnce . "gpgPassphrase" "Copy your gpg passphrase key here" -}}
+
 [data]
+    name = {{ $name | quote }}
     email = {{ $email | quote }}
+    workEmail = {{ $workEmail | quote }}
     computerName = {{ $givenName | quote }}
     isWorkLaptop = {{ $isWorkLaptop | quote }}
+    gpgGit = {{ $gpgGit | quote }}
+    opItemGPG = {{ $opItemGPG | quote }}
+    gpgPassphrase = {{ $gpgPassphrase | quote }}
 
 [edit]
     command = "code"
     args = ["--wait"]
+
+[diff]
+    command = "code"
+    args = ["--wait", "--diff"]
+
+[merge]
+    command = "code"
+    args = ["--wait", "--merge"]

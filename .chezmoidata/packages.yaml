@@ -9,6 +9,7 @@ packages:
     - "homebrew/cask-fonts"
     - "homebrew/cask-versions"
     brews:
+    # - "1password-cli", retrieved from pre-reqs
     - "bat"
     - "coreutils"
     - "croc"
@@ -25,12 +26,14 @@ packages:
     - "nano"
     - "ncdu"
     - "pandoc"
+    - "poppler"
     - "python"
     - "rclone"
     - "rmlint"
     - "rsync"
     - "ssh-copy-id"
     - "sqlite3"
+    - "terraform"
     - "topgrade"
     - "tree"
     - "unar"
@@ -38,7 +41,7 @@ packages:
     - "wget"
     - "youtube-dl"
     casks:
-    - "1password"
+    # - "1password", retrieved from pre-reqs
     - "arc"
     - "betterdisplay"
     - "bruno"
@@ -57,6 +60,7 @@ packages:
     - "jetbrains-toolbox"
     - "obsidian"
     - "raycast"
+    - "rectangle"
     - "spotify"
     - "tableplus"
     - "visual-studio-code"
@@ -74,10 +78,9 @@ packages:
     - "steam"
     - "transmission"
     crates:
-    - 'dum'
-    - 'jless'
+    - "dum"
+    - "jless"
     nodes:
-    - 'nx'
     vscode:
     - "dbaeumer.vscode-eslint"
     - "esbenp.prettier-vscode"

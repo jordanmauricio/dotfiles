@@ -2,7 +2,7 @@
 
 # If you come from bash you might have to change your $PATH.
 export PATH=$HOME/bin:/usr/local/bin:$PATH
-export EDITOR="code"
+export EDITOR="code --wait"
 
 # Resolve chezmoi cd
 CHEZMOI_HOME="$HOME/.local/share/chezmoi"
@@ -78,4 +78,11 @@ zstyle ':completion:*' menu no
 zstyle ':fzf-tab:complete:*' fzf-preview 'ls --color $realpath'
 zstyle ':fzf-tab:complete:__zoxide_z:*' fzf-preview 'ls --color $realpath'
 
-export PATH=/usr/local/opt/sqlite/bin:$PATH
+function gpg_cache () {
+        gpg-connect-agent /bye &> /dev/null # 1
+        eval $(op signin) # 2
+        op item get $OPITEM --fields notesPlain | /opt/homebrew/Cellar/gnupg/2.4.5/libexec/gpg-preset-passphrase --preset $GPGPHRASE # 3
+}
+gpg_cache
+
+export PATH=/opt/homebrew/opt/sqlite/bin:$PATH

@@ -1,0 +1,121 @@
+[user]
+	name = {{ .name }}
+	email = {{ .email }}
+	signingkey = {{ .gpgGit }}
+
+[github]
+	user = jordanmauricio
+
+[core]
+	excludesfile = /Users/jordan/.config/git/ignore
+	editor = code --wait
+	filemode = false
+	trustctime = false
+	autocrlf = input
+	untrackedCache = true
+	pager = diff-so-fancy | less --tabs=4 -RFX
+	ignorecase = false
+
+[credential]
+	helper = /opt/homebrew/bin/op
+
+[credential "https://github.com"]
+    helper = !op read op://Personal/GitHub/password
+
+[pull]
+	# rebase = true
+
+[init]
+	defaultBranch = main
+
+[push]
+	default = simple
+	followTags = true
+	autoSetupRemote = true
+
+[fetch]
+	prune = true
+
+[grep]
+	lineNumber = true
+
+[help]
+	autocorrect = 1
+
+[alias]
+	amend = commit --amend --reuse-message=HEAD
+	br = branch
+	ci = commit
+	co = checkout
+	contrib = shortlog --summary --numbered
+	cr = clone --recursive
+	df = diff --word-diff
+	g = grep --break --heading --line-number
+	l = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
+	ld = "!sh -c \"git log --since '${1:-1} days ago' --oneline --author $(git config user.email)\" -"
+	lg = log -p
+	ll = log --pretty=oneline --graph --abbrev-commit
+	lm = log --pretty=format:'* %s (%h)'
+	patch = !git --no-pager diff --no-color
+	p = push
+	pf = push --force
+	newp = push origin "$(git_current_branch)"
+	pr = "!f() { git fetch -fu ${2:-origin} refs/pull/$1/head:pr/$1 && git checkout pr/$1; }; f"
+	show-ignored = "! git clean -ndX | perl -pe 's/Would remove/Ignored:/'"
+	st = status
+	stl = ls-files -m -o --exclude-standard
+	sts = status -sb
+	unstage = reset --hard HEAD
+	ggpush = git push origin "$(git_current_branch)"
+
+[color]
+	ui = auto
+[color "branch"]
+	current = yellow reverse
+	local = yellow
+	remote = green
+[color "diff"]
+	meta = yellow bold
+	frag = magenta bold
+	old = red bold
+	new = green bold
+[color "status"]
+	added = yellow
+	changed = green
+	untracked = cyan
+[color "diff-highlight"]
+	oldNormal = red bold
+	oldHighlight = red bold 52
+	newNormal = green bold
+	newHighlight = green bold 22
+/Users/jordan/.local/share/chezmoi/config
+[gpg]
+	format = ssh
+[gpg "ssh"]
+	program = /Applications/1Password.app/Contents/MacOS/op-ssh-sign
+[commit]
+	gpgsign = true
+
+
+[includeIf "gitdir:~/Projects/clients/kramphub/"]
+	path = ~/Projects/clients/kramphub/mono/.github/config
+
+[diff]
+	renames = copies
+	indentHeuristic = true
+	tool = sourcetree
+[difftool]
+	prompt = false
+[difftool "sourcetree"]
+	path = /Applications/Sourcetree.app/Contents/Resources/opendiff-w.sh
+	cmd = opendiff \"$LOCAL\" \"$REMOTE\"
+
+[merge]
+	tool = sourcetree
+	conflictstyle = diff3
+	defaultToUpstream = true
+[mergetool]
+	prompt = false
+[mergetool "sourcetree"]
+	cmd = /Applications/Sourcetree.app/Contents/Resources/opendiff-w.sh \"$LOCAL\" \"$REMOTE\" -ancestor \"$BASE\" -merge \"$MERGED\"
+	trustExitCode = true

@@ -25,3 +25,13 @@ fi
 if ! command cargo >/dev/null; then
   curl https://sh.rustup.rs -sSf | sh -s -- -y
 fi
+
+# Install password manager if it's not already installed
+if ! command op >/dev/null; then
+  brew install --cask 1password
+  brew install 1password-cli
+
+  echo "1Password has been installed. Perform the manual setup to integrate them as defined in the readme. Afterwards, press any key to continue."
+  read -n 1 -s -r
+  echo "Continuing with the script..."
+fi
