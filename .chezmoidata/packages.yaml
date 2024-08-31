@@ -5,7 +5,6 @@ packages:
     - "mongodb/brew"
     - "homebrew/cask-drivers"
     - "homebrew/cask-fonts"
-    - "homebrew/cask-versions"
     brews:
     # - "1password-cli", retrieved from pre-reqs
     - "bat"
@@ -51,7 +50,7 @@ packages:
     - "google-cloud-sdk"
     - "google-drive"
     - "google-chrome"
-    - "google-chrome-canary"
+    - "google-chrome@canary"
     - "hammerspoon"
     - "imageoptim"
     - "iterm2"
@@ -79,6 +78,12 @@ packages:
     - "dum"
     - "jless"
     nodes:
+    - "@antfu/ni"
+    - "gtop"
+    - "npm"
+    - "npm-check-updates"
+    - "pnpm"
+    - "yarn"
     vscode:
     - "dbaeumer.vscode-eslint"
     - "esbenp.prettier-vscode"
