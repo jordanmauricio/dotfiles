@@ -10,7 +10,7 @@ fi
 
 # Install Homebrew if it's not already installed
 if ! command -v brew >/dev/null; then
-  sudo curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh
+  sudo curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh
 fi
 
 # Install Rust if it's not already installed
