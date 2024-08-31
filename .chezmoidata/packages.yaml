@@ -3,8 +3,6 @@ packages:
     taps:
     - "homebrew/bundle"
     - "mongodb/brew"
-    - "homebrew/cask-drivers"
-    - "homebrew/cask-fonts"
     brews:
     # - "1password-cli", retrieved from pre-reqs
     - "bat"
@@ -13,6 +11,7 @@ packages:
     - "dockutil"
     - "ffmpeg"
     - "fnm"
+    - "fzf"
     - "gnu-sed"
     - "grep"
     - "grip"
@@ -37,6 +36,7 @@ packages:
     - "webp"
     - "wget"
     - "youtube-dl"
+    - "zoxide"
     casks:
     # - "1password", retrieved from pre-reqs
     - "arc"
@@ -92,7 +92,6 @@ packages:
     - "octref.vetur"
     - "redhat.vscode-yaml"
     - "sharat.vscode-brewfile"
-    - "cssho.vscode-svgviewer"
     - "bradlc.vscode-tailwindcss"
     - "ms-azuretools.vscode-docker"
     - "kumar-harsh.graphql-for-vscode"
