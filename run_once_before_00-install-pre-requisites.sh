@@ -16,12 +16,12 @@ fi
 
 # Install Homebrew if it's not already installed
 if ! command -v brew >/dev/null; then
-  curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh
+  sh -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
 fi
 
 # Install Rust if it's not already installed
 if ! command cargo >/dev/null; then
-  curl https://sh.rustup.rs -sSf | sh -s -- -y
+  sh -c "$(curl https://sh.rustup.rs -sSf)" | sh -s -- -y
 fi
 
 # Install password manager if it's not already installed
