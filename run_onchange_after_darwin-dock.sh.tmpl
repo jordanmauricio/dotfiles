@@ -1,0 +1,13 @@
+{{ if eq .chezmoi.os "darwin" -}}
+#!/bin/bash
+
+dockutil --no-restart --remove all
+
+{{ range .apps.darwin -}}
+dockutil --no-restart --add {{ . | quote }}
+{{ end -}}
+
+killall Dock
+
+EOF
+{{ end -}}

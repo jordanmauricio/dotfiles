@@ -1,0 +1,8 @@
+apps:
+  darwin:
+    - "/Applications/Arc.app"
+    - "/Applications/Webstorm.app"
+    - "/Applications/iTerm.app"
+    - "/Applications/Spark Desktop.app"
+    - "/Applications/Spotify.app"
+    - "/System/Applications/Notes.app"

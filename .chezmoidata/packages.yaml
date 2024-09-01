@@ -58,6 +58,7 @@ packages:
     - "obsidian"
     - "raycast"
     - "rectangle"
+    - "readdle-spark"
     - "spotify"
     - "tableplus"
     - "visual-studio-code"
