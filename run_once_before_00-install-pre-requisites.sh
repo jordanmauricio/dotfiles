@@ -22,12 +22,12 @@ if ! command -v brew >/dev/null; then
 fi
 
 # Install Rust if it's not already installed
-if ! command cargo >/dev/null; then
+if ! command -v cargo >/dev/null; then
   brew install rust
 fi
 
 # Install password manager if it's not already installed
-if ! command op >/dev/null; then
+if ! command -v op >/dev/null; then
   brew install --cask 1password
   brew install 1password-cli
 
