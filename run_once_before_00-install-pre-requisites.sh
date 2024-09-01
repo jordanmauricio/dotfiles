@@ -23,7 +23,7 @@ fi
 
 # Install Rust if it's not already installed
 if ! command cargo >/dev/null; then
-  /bin/bash -c "$(curl https://sh.rustup.rs -sSf)" | sh -s -- -y
+  curl https://sh.rustup.rs -sSf | sh -s -- -y
 fi
 
 # Install password manager if it's not already installed
