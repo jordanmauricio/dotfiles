@@ -339,4 +339,9 @@ for app in "Finder" "Calendar" "Dock" "SystemUIServer"; do
     killall "${app}" &> /dev/null || true
 done
 
+###############################################################################
+# Enable features above without requiring a restart
+###############################################################################
+/System/Library/PrivateFrameworks/SystemAdministration.framework/Resources/activateSettings -u
+
 exit 0
