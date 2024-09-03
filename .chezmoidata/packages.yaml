@@ -13,6 +13,7 @@ packages:
     - "fnm"
     - "fzf"
     - "gnu-sed"
+    - "gh"
     - "grep"
     - "grip"
     - "httpie"
