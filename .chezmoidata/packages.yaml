@@ -30,7 +30,7 @@ packages:
     - "rsync"
     - "ssh-copy-id"
     - "sqlite3"
-    - "terraform"
+    - "hashicorp/tap/terraform"
     - "topgrade"
     - "tree"
     - "unar"
@@ -116,3 +116,4 @@ packages:
     - "sdras.night-owl"
     - "enkia.tokyo-night"
     - "pmndrs.pmndrs"
+    - "nrwl.angular-console"
