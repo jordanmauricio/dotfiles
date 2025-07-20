@@ -99,7 +99,7 @@ packages:
     - "kumar-harsh.graphql-for-vscode"
     - "firsttris.vscode-jest-runner"
     - "andyyaldoo.vscode-json"
-    - "bungcip.better-toml"
+    - "tamasfe.even-better-toml"
     - "christian-kohler.npm-intellisense"
     - "christian-kohler.path-intellisense"
     - "steoates.autoimport"
