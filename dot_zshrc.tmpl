@@ -84,9 +84,34 @@ zstyle ':fzf-tab:complete:__zoxide_z:*' fzf-preview 'ls --color $realpath'
 function gpg_cache () {
         gpg-connect-agent /bye &> /dev/null # 1
         eval $(op signin) # 2
-        op item get $OPITEM --fields notesPlain | /opt/homebrew/Cellar/gnupg/2.4.5_1/libexec/gpg-preset-passphrase --preset $GPGPHRASE # 3
+        op item get $OPITEM --fields notesPlain | /opt/homebrew/Cellar/gnupg/2.4.7/libexec/gpg-preset-passphrase --preset $GPGPHRASE # 3
 }
 gpg_cache
 
 export GH_TOKEN="$(op item get tzcbernwu4gktzonwchcbgv5km --reveal --fields label=token)"
 export PATH=/opt/homebrew/opt/sqlite/bin:$PATH
+
+# bun completions
+[ -s "/Users/jordan/.bun/_bun" ] && source "/Users/jordan/.bun/_bun"
+
+# bun
+export BUN_INSTALL="$HOME/.bun"
+export PATH="$BUN_INSTALL/bin:$PATH"
+
+# ruby
+if [ -d "/opt/homebrew/opt/ruby/bin" ]; then
+  export PATH=/opt/homebrew/opt/ruby/bin:$PATH
+  export PATH=`gem environment gemdir`/bin:$PATH
+fi
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+export ANDROID_HOME=$HOME/Library/Android/sdk
+export PATH=$PATH:$ANDROID_HOME/emulator
+export PATH=$PATH:$ANDROID_HOME/platform-tools
+
+export GOPATH=$HOME/go
+export GOROOT="$(brew --prefix golang)/libexec"
+export PATH="$PATH:${GOPATH}/bin:${GOROOT}/bin"
