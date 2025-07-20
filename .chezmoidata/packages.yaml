@@ -48,7 +48,6 @@ packages:
     - "betterdisplay"
     - "bruno"
     - "cyberduck"
-    - "docker"
     - "dozer"
     - "figma"
     - "font-jetbrains-mono-nerd-font"
