@@ -1,8 +1,8 @@
 apps:
   darwin:
-    - "/Applications/Arc.app"
-    - "/Applications/Webstorm.app"
-    - "/Applications/iTerm.app"
-    - "/Applications/Spark Desktop.app"
-    - "/Applications/Spotify.app"
+    - "/Applications/Google Chrome.app"
+    - "/Applications/Zed.app"
+    - "/Applications/Ghostty.app"
+    - "/Applications/Mail.app"
+    - "/Applications/Music.app"
     - "/System/Applications/Notes.app"

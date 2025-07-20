@@ -21,6 +21,7 @@ sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply jordanmauricio`
 
 - Configure SSH
 - Manually configure remaining Finder settings
+- Insa360 Link 2 and Yealink
 
 ## Guides
 

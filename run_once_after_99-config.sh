@@ -9,3 +9,6 @@ fnm use
 gpg-agent --daemon
 echo "allow-preset-passphrase" >> ~/.gnupg/gpg-agent.conf
 gpg-connect-agent reloadagent /bye
+
+# kill sudo loop
+kill "$sudo_loop_pid"
