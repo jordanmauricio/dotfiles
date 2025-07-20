@@ -9,11 +9,13 @@ packages:
     - "coreutils"
     - "croc"
     - "dockutil"
+    - "fastlane" # for rn
     - "ffmpeg"
     - "fnm"
     - "fzf"
     - "gh"
     - "gnu-sed"
+    - "golang"
     - "grep"
     - "grip"
     - "httpie"
@@ -22,21 +24,24 @@ packages:
     - "mackup"
     - "nano"
     - "ncdu"
+    - "nvm" # for rn
     - "pandoc"
     - "poppler"
     - "python"
+    - "rbenv" # for rn
     - "rclone"
     - "rmlint"
     - "rsync"
     - "ssh-copy-id"
-    - "sqlite3"
     - "hashicorp/tap/terraform"
     - "topgrade"
     - "tree"
     - "unar"
+    - "watchman" # for rn
     - "webp"
     - "wget"
     - "youtube-dl"
+    - "zed"
     - "zoxide"
     casks:
     # - "1password", retrieved from pre-reqs
@@ -47,6 +52,7 @@ packages:
     - "dozer"
     - "figma"
     - "font-jetbrains-mono-nerd-font"
+    - "ghostty"
     - "google-cloud-sdk"
     - "google-chrome"
     - "google-chrome@canary"
@@ -60,6 +66,7 @@ packages:
     - "webstorm"
     - "whatsapp"
     caskswork:
+    - "android-studio"
     - "slack"
     caskspersonal:
     - "discord"
@@ -69,6 +76,7 @@ packages:
     - "multimc"
     - "steam"
     - "transmission"
+    - "zulu@17" # for rn
     crates:
     - "dum"
     - "jless"
@@ -80,6 +88,7 @@ packages:
     - "pnpm"
     - "yarn"
     vscode:
+    - "eamodio.gitlens"
     - "dbaeumer.vscode-eslint"
     - "esbenp.prettier-vscode"
     - "DavidAnson.vscode-markdownlint"
@@ -100,7 +109,7 @@ packages:
     - "shardulm94.trailing-spaces"
     - "Gruntfuggly.todo-tree"
     - "pflannery.vscode-versionlens"
+    - "nrwl.angular-console"
     - "sdras.night-owl"
     - "enkia.tokyo-night"
     - "pmndrs.pmndrs"
-    - "nrwl.angular-console"
