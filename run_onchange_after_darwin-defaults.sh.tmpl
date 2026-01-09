@@ -175,6 +175,9 @@ defaults write com.apple.screencapture disable-shadow -bool true
 # Enable subpixel font rendering on non-Apple LCDs
 defaults write NSGlobalDomain AppleFontSmoothing -int 2
 
+# Disable Spaces per monitor, this improves performance and stability https://nikitabobko.github.io/AeroSpace/guide#a-note-on-displays-have-separate-spaces
+defaults write com.apple.spaces spans-displays -bool true
+
 ###############################################################################
 # Finder                                                                      #
 ###############################################################################
