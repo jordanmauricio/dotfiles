@@ -3,6 +3,7 @@ packages:
     taps:
     - "homebrew/bundle"
     - "oven-sh/bun"
+    - "nikitabobko/tap"
     brews:
     # - "1password-cli", retrieved from pre-reqs
     - "bat"
@@ -45,38 +46,42 @@ packages:
     - "zoxide"
     casks:
     # - "1password", retrieved from pre-reqs
+    - "aerospace"
+    - "affinity"
     - "betterdisplay"
     - "bruno"
     - "cyberduck"
-    - "dozer"
     - "figma"
     - "font-jetbrains-mono-nerd-font"
     - "ghostty"
     - "google-cloud-sdk"
     - "google-chrome"
     - "google-chrome@canary"
+    - "hiddenbar"
     - "imageoptim"
+    - "insta360-link-controller"
     - "jetbrains-toolbox"
     - "obsidian"
     - "raycast"
     - "tableplus"
+    - "ticktick"
     - "visual-studio-code"
     - "vlc"
     - "webstorm"
     - "whatsapp"
     - "zed"
+    - "zen"
+    - "zulu@17" # for rn
     caskswork:
     - "android-studio"
     - "slack"
     caskspersonal:
-    - "discord"
+    - "legcord"
     - "eddie"
     - "minecraft"
-    - "mongodb-compass"
     - "multimc"
     - "steam"
     - "transmission"
-    - "zulu@17" # for rn
     crates:
     - "dum"
     - "jless"
