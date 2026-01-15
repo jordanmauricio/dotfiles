@@ -24,7 +24,8 @@ fi
 
 # Install Rust if it's not already installed
 if ! command -v cargo >/dev/null; then
-  curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+  curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs \
+    | sh -s -- -y >/dev/null
   . "$HOME/.cargo/env"
 fi
 
