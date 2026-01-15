@@ -42,7 +42,7 @@ packages:
     - "watchman" # for rn
     - "webp"
     - "wget"
-    - "youtube-dl"
+    - "yt-dlp" #youtube
     - "zoxide"
     casks:
     # - "1password", retrieved from pre-reqs
