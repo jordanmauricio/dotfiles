@@ -11,6 +11,6 @@ echo "allow-preset-passphrase" >> ~/.gnupg/gpg-agent.conf
 gpg-connect-agent reloadagent /bye
 
 # kill sudo loop
-if [ -f /tmp/sudo_loop.pid ]; then
-  kill "$(cat /tmp/sudo_loop.pid)" && rm /tmp/sudo_loop.pid
-fi
+# if [ -f /tmp/sudo_loop.pid ]; then
+#   kill "$(cat /tmp/sudo_loop.pid)" && rm /tmp/sudo_loop.pid
+# fi
