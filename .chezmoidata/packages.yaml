@@ -3,7 +3,6 @@ packages:
     taps:
     - "homebrew/bundle"
     - "oven-sh/bun"
-    - "nikitabobko/tap"
     brews:
     # - "1password-cli", retrieved from pre-reqs
     - "bat"
@@ -46,7 +45,7 @@ packages:
     - "zoxide"
     casks:
     # - "1password", retrieved from pre-reqs
-    - "aerospace"
+    - "nikitabobko/tap/aerospace"
     - "affinity"
     - "betterdisplay"
     - "bruno"
@@ -57,7 +56,6 @@ packages:
     - "google-cloud-sdk"
     - "google-chrome"
     - "google-chrome@canary"
-    - "hiddenbar"
     - "imageoptim"
     - "insta360-link-controller"
     - "jetbrains-toolbox"
