@@ -1,7 +1,6 @@
 packages:
   darwin:
     taps:
-    - "homebrew/bundle"
     - "oven-sh/bun"
     brews:
     # - "1password-cli", retrieved from pre-reqs
@@ -53,7 +52,7 @@ packages:
     - "figma"
     - "font-jetbrains-mono-nerd-font"
     - "ghostty"
-    - "google-cloud-sdk"
+    - "gcloud-cli"
     - "google-chrome"
     - "google-chrome@canary"
     - "imageoptim"
