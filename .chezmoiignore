@@ -1,2 +1,12 @@
+# repo-only files, never applied to $HOME
+README.md
+CLAUDE.md
+LICENSE
+storage
+configs
+bin
+# disabled scripts (skiprun_ is not a chezmoi prefix; without this it would be copied to ~)
+skiprun_*
+# root-level names that only exist inside private_dot_config/private_git/
 config
 ignore

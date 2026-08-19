@@ -8,11 +8,13 @@
 
 {{- $isWorkLaptop := promptStringOnce . "isWorkLaptop" "Is this a work laptop? y/n" -}}
 
-{{- $gpgGit := promptStringOnce . "gpgGit" "Copy your gpg key here" -}}
+{{- $gpgGit := promptStringOnce . "gpgGit" "Paste the SSH public key used for git commit signing (1Password SSH agent)" -}}
 
 {{- $opItemGPG := promptStringOnce . "opItemGPG" "Copy your 1password item key here" -}}
 
 {{- $gpgPassphrase := promptStringOnce . "gpgPassphrase" "Copy your gpg passphrase key here" -}}
+
+sourceDir = "{{ .chezmoi.homeDir }}/projects/dotfiles"
 
 [data]
     name = {{ $name | quote }}
@@ -29,8 +31,7 @@
     args = ["--wait"]
 
 [diff]
-    command = "code"
-    args = ["--wait", "--diff"]
+    pager = "hunk pager"
 
 [merge]
     command = "code"
