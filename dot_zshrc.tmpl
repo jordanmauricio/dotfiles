@@ -77,7 +77,16 @@ zstyle ':completion:*' menu no
 zstyle ':fzf-tab:complete:*' fzf-preview 'ls --color $realpath'
 zstyle ':fzf-tab:complete:__zoxide_z:*' fzf-preview 'ls --color $realpath'
 
-export GH_TOKEN="$(op item get tzcbernwu4gktzonwchcbgv5km --reveal --fields label=token)"
+# GH_TOKEN lives in 1Password. Fetch it lazily on first `gh` use instead of on every
+# shell start (the `op` round-trip was the main startup delay). Inherited values are kept.
+# Run `gh_token` yourself if another tool needs GH_TOKEN exported in the current shell.
+gh_token() {
+  export GH_TOKEN="$(op item get tzcbernwu4gktzonwchcbgv5km --reveal --fields label=token)"
+}
+gh() {
+  [ -n "$GH_TOKEN" ] || gh_token
+  command gh "$@"
+}
 export PATH=/opt/homebrew/opt/sqlite/bin:$PATH
 
 # bun completions
