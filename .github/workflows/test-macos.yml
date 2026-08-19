@@ -1,0 +1,324 @@
+name: Bootstrap test (macOS)
+
+# Provisions a throwaway macOS runner from scratch exactly the way a new laptop is
+# provisioned (chezmoi init --apply against this repo), then verifies the result.
+# The runner is ephemeral: GitHub destroys it when the job ends, pass or fail.
+# On failure a `dotfiles-ci` issue is opened (or commented on, if one is already open)
+# with the tail of the log; the full log is attached to the run as an artifact.
+
+on:
+  schedule:
+    # 21:00 UTC Thursday = 23:00 Thu Europe/Amsterdam (CEST) / 22:00 Thu (CET).
+    # Late Thursday night either way, so the result is waiting on Friday morning.
+    - cron: '0 21 * * 4'
+  workflow_dispatch:
+    inputs:
+      cask_mode:
+        description: 'How to handle GUI casks'
+        type: choice
+        default: fetch
+        options:
+          - fetch      # resolve + download + checksum, never install (default)
+          - resolve    # resolve only: does the cask still exist? (fastest)
+          - install    # really install every app (slow, disk-hungry)
+      is_work_laptop:
+        description: 'Provision as a work laptop (caskswork instead of caskspersonal)'
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: bootstrap-macos
+  cancel-in-progress: false
+
+jobs:
+  bootstrap:
+    name: Provision a clean Mac
+    # arm64 3-core standard runner: cheapest macOS tier, and the only correct one —
+    # the dotfiles hardcode /opt/homebrew, so an Intel runner would fail spuriously.
+    runs-on: macos-latest
+    timeout-minutes: 180
+
+    env:
+      # Scheduled runs get no `inputs`, so the defaults are spelled out here too.
+      CASK_MODE: ${{ inputs.cask_mode || 'fetch' }}
+      IS_WORK_LAPTOP: ${{ inputs.is_work_laptop || false }}
+      NONINTERACTIVE: '1'
+      HOMEBREW_NO_ANALYTICS: '1'
+      HOMEBREW_NO_ENV_HINTS: '1'
+      # Mock chezmoi prompt data — the real values live in ~/.config/chezmoi/chezmoi.toml
+      # on a real machine and must never appear in this public repo.
+      CI_NAME: 'CI Runner'
+      CI_EMAIL: 'ci@example.invalid'
+      CI_WORK_EMAIL: 'ci-work@example.invalid'
+      CI_COMPUTER_NAME: 'dotfiles-ci'
+      CI_SIGNING_KEY: 'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA ci@example.invalid'
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up log file
+        run: |
+          mkdir -p "$RUNNER_TEMP/ci-logs"
+          echo "LOG=$RUNNER_TEMP/ci-logs/bootstrap.log" >> "$GITHUB_ENV"
+
+      - name: Reclaim disk space
+        run: |
+          {
+            echo "::group::disk before"
+            df -h /
+            echo "::endgroup::"
+
+            # The Android SDK (~12 GB) is only relevant to the work-laptop cask set and
+            # is re-downloadable; extra Xcodes are unused by anything in packages.yaml.
+            sudo rm -rf "$HOME/Library/Android" || true
+            keep="$(xcode-select -p 2>/dev/null | sed -E 's|(/Applications/Xcode[^/]*\.app).*|\1|')"
+            for app in /Applications/Xcode*.app; do
+              [ "$app" = "$keep" ] || sudo rm -rf "$app" || true
+            done
+
+            echo "::group::disk after"
+            df -h /
+            echo "::endgroup::"
+          } 2>&1 | tee -a "$LOG"
+
+      - name: Mock the 1Password CLI
+        run: |
+          {
+            # `op` gates the pre-requisite script and backs the lazy GH_TOKEN helper in
+            # .zshrc and the git credential helper. None of those can reach a real vault
+            # from CI, so stub the binary ahead of everything else on PATH. Its presence
+            # also makes run_once_before_00-install-pre-requisites.sh short-circuit,
+            # which is what we want: that script's tail is an interactive `read` waiting
+            # for the human to finish 1Password's GUI setup.
+            mkdir -p "$HOME/.ci-bin"
+            cat > "$HOME/.ci-bin/op" <<'OPEOF'
+          #!/bin/sh
+          # Mock 1Password CLI for CI. Returns fixed, non-secret values.
+          case "$1" in
+            --version)     echo "2.0.0-ci-mock" ;;
+            read|item|get) echo "ci-mock-secret" ;;
+            signin|whoami) echo "ci-mock-session" ;;
+            store|erase)   : ;;
+            *)             echo "ci-mock-secret" ;;
+          esac
+          exit 0
+          OPEOF
+            chmod +x "$HOME/.ci-bin/op"
+            echo "$HOME/.ci-bin" >> "$GITHUB_PATH"
+            "$HOME/.ci-bin/op" --version
+          } 2>&1 | tee -a "$LOG"
+
+      - name: Stage source state at ~/projects/dotfiles
+        run: |
+          {
+            # .chezmoi.toml.tmpl hardcodes sourceDir = ~/projects/dotfiles, so the
+            # checkout has to live there rather than in the workspace.
+            mkdir -p "$HOME/projects"
+            rsync -a --delete "$GITHUB_WORKSPACE/" "$HOME/projects/dotfiles/"
+            ls -a "$HOME/projects/dotfiles"
+          } 2>&1 | tee -a "$LOG"
+
+      - name: Hold back casks from brew bundle
+        if: ${{ (inputs.cask_mode || 'fetch') != 'install' }}
+        run: |
+          {
+            # brew bundle has no "skip all casks" switch, only name lists, so build them
+            # from packages.yaml rather than editing the source state under test. The
+            # held-back casks are exercised separately by the simulation step below.
+            #
+            # visual-studio-code is deliberately NOT held back: `brew bundle`'s 37 vscode
+            # entries need a real `code` binary to install against, and extensions get
+            # renamed and unpublished often enough to be worth testing for real.
+            skip="$("$GITHUB_WORKSPACE/.github/scripts/packages-list.sh" casks,caskswork,caskspersonal \
+                     | grep -vx 'visual-studio-code' | tr '\n' ' ')"
+            echo "HOMEBREW_BUNDLE_CASK_SKIP=$skip" >> "$GITHUB_ENV"
+            echo "Holding back: $skip"
+          } 2>&1 | tee -a "$LOG"
+
+      - name: Install chezmoi
+        run: |
+          {
+            # Same install path the README bootstrap uses: a hand-managed ~/bin binary,
+            # deliberately not a keg, because chezmoi is what installs Homebrew.
+            sh -c "$(curl -fsLS get.chezmoi.io)" -- -b "$HOME/bin"
+            echo "$HOME/bin" >> "$GITHUB_PATH"
+            "$HOME/bin/chezmoi" --version
+          } 2>&1 | tee -a "$LOG"
+
+      - name: chezmoi init
+        id: init
+        run: |
+          {
+            chezmoi init \
+              --source="$HOME/projects/dotfiles" \
+              --no-tty \
+              --promptString "name=$CI_NAME" \
+              --promptString "email=$CI_EMAIL" \
+              --promptString "workEmail=$CI_WORK_EMAIL" \
+              --promptString "computerName=$CI_COMPUTER_NAME" \
+              --promptString "gpgGit=$CI_SIGNING_KEY" \
+              --promptBool "isWorkLaptop=$IS_WORK_LAPTOP" \
+              < /dev/null
+            echo "::group::rendered chezmoi.toml"
+            cat "$HOME/.config/chezmoi/chezmoi.toml"
+            echo "::endgroup::"
+            chezmoi data
+          } 2>&1 | tee -a "$LOG"
+
+      - name: chezmoi apply
+        id: apply
+        run: |
+          # The real work: renders every template into $HOME and runs the pre-requisite,
+          # brew bundle / cargo / npm, macOS defaults, Dock and fnm scripts in order.
+          chezmoi apply < /dev/null 2>&1 | tee -a "$LOG"
+
+      - name: Simulate cask installation
+        id: simulate_casks
+        if: ${{ (inputs.cask_mode || 'fetch') != 'install' }}
+        run: |
+          "$GITHUB_WORKSPACE/.github/scripts/simulate-casks.sh" 2>&1 | tee -a "$LOG"
+
+      - name: chezmoi verify and doctor
+        id: verify_state
+        run: |
+          {
+            echo "::group::chezmoi doctor"
+            chezmoi doctor || true
+            echo "::endgroup::"
+            echo "chezmoi verify: HOME must match the source state"
+            chezmoi verify
+          } 2>&1 | tee -a "$LOG"
+
+      - name: Verify installed tooling
+        id: verify_tools
+        run: |
+          {
+            eval "$(/opt/homebrew/bin/brew shellenv)"
+            export PATH="$HOME/.cargo/bin:$HOME/go/bin:$HOME/Library/pnpm:$HOME/.local/bin:$PATH"
+
+            missing=0
+            check() {
+              if command -v "$1" >/dev/null 2>&1; then
+                printf 'ok      %-12s %s\n' "$1" "$(command -v "$1")"
+              else
+                printf 'MISSING %s\n' "$1"
+                missing=1
+              fi
+            }
+
+            echo "::group::tool map"
+            # Every binary docs/tooling.md promises, grouped as in the tool map.
+            for t in eza bat fd rg dust btm gsed delta hunk http jq jless unar pandoc \
+                     ffmpeg yt-dlp croc wget topgrade dockutil zoxide fzf gh; do check "$t"; done
+            # Language runtimes and package managers.
+            for t in fnm uv go bun cargo rustup; do check "$t"; done
+            # cargo crates and npm globals.
+            for t in dum ni nr nlx pnpm yarn nx ncu; do check "$t"; done
+            echo "::endgroup::"
+
+            echo "::group::rendered dotfiles"
+            for f in "$HOME/.zshrc" "$HOME/.p10k.zsh" "$HOME/.inputrc" \
+                     "$HOME/.config/git/config" "$HOME/.config/git/ignore" \
+                     "$HOME/.config/git/work" "$HOME/.claude/CLAUDE.md"; do
+              if [ -f "$f" ]; then printf 'ok      %s\n' "$f"; else printf 'MISSING %s\n' "$f"; missing=1; fi
+            done
+            echo "::endgroup::"
+
+            # Templates must have rendered the prompt data, not left the placeholders.
+            grep -q "$CI_EMAIL" "$HOME/.config/git/config" || { echo "MISSING email in git config"; missing=1; }
+            grep -q "$CI_WORK_EMAIL" "$HOME/.config/git/work" || { echo "MISSING workEmail in git work config"; missing=1; }
+            if grep -q '{{' "$HOME/.config/git/config"; then echo "UNRENDERED template in git config"; missing=1; fi
+
+            # fnm must have a default node from run_once_after_99-config.sh.
+            echo "::group::fnm"
+            fnm ls
+            fnm current || true
+            echo "::endgroup::"
+
+            exit "$missing"
+          } 2>&1 | tee -a "$LOG"
+
+      - name: Verify an interactive zsh starts
+        id: verify_shell
+        run: |
+          {
+            eval "$(/opt/homebrew/bin/brew shellenv)"
+            # The first run clones zinit and compiles plugins, so allow generous time;
+            # the timed run afterwards is the one that reflects real startup cost.
+            gtimeout 300 zsh -i -c 'exit' < /dev/null
+            echo "warm interactive startup:"
+            time (gtimeout 120 zsh -i -c 'exit' < /dev/null)
+            # Aliases and functions are sourced from the source dir, not from $HOME.
+            gtimeout 120 zsh -i -c 'alias ls; type mk; type gh_token' < /dev/null
+          } 2>&1 | tee -a "$LOG"
+
+      - name: Final disk report
+        if: always()
+        run: df -h / 2>&1 | tee -a "$LOG"
+
+      - name: Upload full log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: bootstrap-log
+          path: ${{ runner.temp }}/ci-logs/
+          retention-days: 30
+
+      - name: Report failure as an issue
+        if: failure()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          set +e
+          failed="unknown"
+          for s in "chezmoi init:${{ steps.init.outcome }}" \
+                   "chezmoi apply:${{ steps.apply.outcome }}" \
+                   "cask simulation:${{ steps.simulate_casks.outcome }}" \
+                   "chezmoi verify:${{ steps.verify_state.outcome }}" \
+                   "tooling check:${{ steps.verify_tools.outcome }}" \
+                   "interactive zsh:${{ steps.verify_shell.outcome }}"; do
+            case "$s" in *:failure) failed="${s%%:*}"; break;; esac
+          done
+
+          body="$RUNNER_TEMP/issue-body.md"
+          {
+            echo "The weekly macOS bootstrap test failed."
+            echo
+            echo "| | |"
+            echo "|---|---|"
+            echo "| Run | [\`${{ github.run_id }}\`]($RUN_URL) |"
+            echo "| Commit | \`${{ github.sha }}\` |"
+            echo "| Runner | \`macos-latest\` (arm64) |"
+            echo "| Cask mode | \`$CASK_MODE\` |"
+            echo "| Failed at | **$failed** |"
+            echo
+            echo "The full log is attached to the run as the **bootstrap-log** artifact."
+            echo
+            echo "<details><summary>Last 300 lines</summary>"
+            echo
+            echo '```'
+            tail -n 300 "$LOG" 2>/dev/null | tail -c 40000
+            echo '```'
+            echo
+            echo "</details>"
+          } > "$body"
+
+          gh label create dotfiles-ci --color B60205 \
+            --description "Automated dotfiles bootstrap test" 2>/dev/null
+
+          existing="$(gh issue list --label dotfiles-ci --state open --limit 1 --json number --jq '.[0].number')"
+          if [ -n "$existing" ]; then
+            gh issue comment "$existing" --body-file "$body"
+            echo "Commented on existing issue #$existing"
+          else
+            gh issue create \
+              --title "macOS bootstrap failed at $failed ($(date -u +%Y-%m-%d))" \
+              --label dotfiles-ci \
+              --body-file "$body"
+          fi
