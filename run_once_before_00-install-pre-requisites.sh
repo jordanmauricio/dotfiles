@@ -13,9 +13,7 @@ fi
 sudo -v
 
 # Keep-alive: update existing `sudo` time stamp until this script has finished
-while true; do sudo -v; sleep 60; done &
-SUDO_LOOP_PID=$!
-trap 'kill "$SUDO_LOOP_PID" 2>/dev/null' EXIT
+while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
 
 # Install curl if it's not already installed
 if ! command -v curl >/dev/null; then

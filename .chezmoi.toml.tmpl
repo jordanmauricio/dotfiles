@@ -6,7 +6,7 @@
 
 {{- $givenName := promptStringOnce . "computerName" "What do you want to name this machine?" -}}
 
-{{- $isWorkLaptop := promptStringOnce . "isWorkLaptop" "Is this a work laptop? y/n" -}}
+{{- $isWorkLaptop := promptBoolOnce . "isWorkLaptop" "Is this a work laptop" -}}
 
 {{- $gpgGit := promptStringOnce . "gpgGit" "Paste the SSH public key used for git commit signing (1Password SSH agent)" -}}
 
@@ -17,7 +17,7 @@ sourceDir = "{{ .chezmoi.homeDir }}/projects/dotfiles"
     email = {{ $email | quote }}
     workEmail = {{ $workEmail | quote }}
     computerName = {{ $givenName | quote }}
-    isWorkLaptop = {{ $isWorkLaptop | quote }}
+    isWorkLaptop = {{ $isWorkLaptop }}
     gpgGit = {{ $gpgGit | quote }}
 
 [edit]

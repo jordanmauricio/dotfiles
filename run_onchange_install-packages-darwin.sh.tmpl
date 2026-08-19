@@ -8,7 +8,12 @@ cargo install {{ . | quote }}
 npm install -g {{ . | quote }}
 {{ end -}}
 
-brew bundle --file=/dev/stdin <<EOF
+# Homebrew >= 6 refuses to load formulae/casks from third-party taps unless trusted
+{{ range .packages.darwin.taps -}}
+brew tap {{ . | quote }} && brew trust --tap {{ . | quote }}
+{{ end }}
+# --no-upgrade: installing is chezmoi's job, upgrading is topgrade's
+brew bundle --no-upgrade --file=/dev/stdin <<EOF
 {{ range .packages.darwin.taps -}}
 tap {{ . | quote }}
 {{ end -}}
@@ -18,12 +23,12 @@ brew {{ . | quote }}
 {{ range .packages.darwin.casks -}}
 cask {{ . | quote }}
 {{ end -}}
-{{- if ne .isWorkLaptop "y" -}}
+{{- if not .isWorkLaptop -}}
 {{ range .packages.darwin.caskspersonal -}}
 cask {{ . | quote }}
 {{ end -}}
 {{ end -}}
-{{- if ne .isWorkLaptop "n" -}}
+{{- if .isWorkLaptop -}}
 {{ range .packages.darwin.caskswork -}}
 cask {{ . | quote }}
 {{ end -}}

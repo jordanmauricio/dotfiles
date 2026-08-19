@@ -7,7 +7,7 @@
 	user = jordanmauricio
 
 [core]
-	excludesfile = /Users/jordan/.config/git/ignore
+	excludesfile = ~/.config/git/ignore
 	editor = code --wait
 	filemode = false
 	trustctime = false
@@ -65,15 +65,16 @@
 	lm = log --pretty=format:'* %s (%h)'
 	patch = !git --no-pager diff --no-color
 	p = push
-	pf = push --force
-	newp = push origin "$(git_current_branch)"
+	pn = push --no-verify
+	pf = push --force-with-lease
+	pff = push --force
+	pnf = push --no-verify --force-with-lease
 	pr = "!f() { git fetch -fu ${2:-origin} refs/pull/$1/head:pr/$1 && git checkout pr/$1; }; f"
 	show-ignored = "! git clean -ndX | perl -pe 's/Would remove/Ignored:/'"
 	st = status
 	stl = ls-files -m -o --exclude-standard
 	sts = status -sb
-	unstage = reset --hard HEAD
-	ggpush = git push origin "$(git_current_branch)"
+	unstage = reset HEAD --
 	hdiff = -c core.pager=\"hunk pager\" diff
 	hshow = -c core.pager=\"hunk pager\" show
 
@@ -112,19 +113,19 @@
 [diff]
 	renames = copies
 	indentHeuristic = true
-	tool = sourcetree
+	tool = hunk
 [difftool]
 	prompt = false
-[difftool "sourcetree"]
-	path = /Applications/Sourcetree.app/Contents/Resources/opendiff-w.sh
-	cmd = opendiff \"$LOCAL\" \"$REMOTE\"
+[difftool "hunk"]
+	cmd = hunk difftool "$LOCAL" "$REMOTE" "$MERGED"
 
+# hunk is a diff viewer only (no merge mode) — merges stay in VS Code
 [merge]
-	tool = sourcetree
+	tool = vscode
 	conflictstyle = diff3
 	defaultToUpstream = true
 [mergetool]
 	prompt = false
-[mergetool "sourcetree"]
-	cmd = /Applications/Sourcetree.app/Contents/Resources/opendiff-w.sh \"$LOCAL\" \"$REMOTE\" -ancestor \"$BASE\" -merge \"$MERGED\"
-	trustExitCode = true
+	keepBackup = false
+[mergetool "vscode"]
+	cmd = code --wait --merge "$REMOTE" "$LOCAL" "$BASE" "$MERGED"

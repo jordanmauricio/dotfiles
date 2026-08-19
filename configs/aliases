@@ -6,10 +6,8 @@ alias cat="bat"
 alias cd="z"
 
 # Shortcuts
-alias reloadbash="source ~/.bash_profile"
 alias reloadzsh="source ~/.zshrc"
 alias pls="sudo"
-alias g="git"
 alias rr="rm -rf"
 alias zz="z -"
 alias sshots="z ~/Pictures/screenshots"
@@ -36,17 +34,13 @@ alias -- -="z -"                  # Go to previous dir with -
 alias cd.='z $(readlink -f .)'    # Go to real dir (i.e. if current dir is linked)
 
 # npm
-alias ni="npm install"
-alias nu="npm uninstall"
 alias nup="npm update"
 alias nri="rm -r node_modules && npm install"
-alias ncd="npm-check -su"
 alias nlg="npm list -g --depth=0"
 
 # Network
 alias ip="curl -s ipinfo.io | jq -r '.ip'"
 alias ipl="ifconfig | grep -Eo 'inet (addr:)?([0-9]*\.){3}[0-9]*' | grep -Eo '([0-9]*\.){3}[0-9]*' | grep -v '127.0.0.1'"
-alias ifactive="ifconfig | pcregrep -M -o '^[^\t:]+:([^\n]|\n\t)*status: active'"
 
 # Miscellaneous
 alias hosts="sudo $EDITOR /etc/hosts"

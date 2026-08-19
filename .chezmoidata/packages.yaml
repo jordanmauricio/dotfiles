@@ -1,6 +1,9 @@
 packages:
   darwin:
+    # third-party taps: installed AND trusted (Homebrew >= 6 refuses untrusted taps)
     taps:
+    - "hashicorp/tap"
+    - "nikitabobko/tap"
     - "oven-sh/bun"
     brews:
     - "bat"
@@ -36,7 +39,6 @@ packages:
     - "poppler"
     - "python" # latest, default python3
     - "python@3.13" # pinned for gcloud (CLOUDSDK_PYTHON in .zshrc)
-    - "rbenv" # for rn
     - "rclone"
     - "ripgrep"
     - "rmlint"

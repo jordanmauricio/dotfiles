@@ -1,5 +1,3 @@
-#!/bin/bash
-
 export PATH=$HOME/bin:/usr/local/bin:$PATH
 export EDITOR="code --wait"
 
@@ -22,33 +20,39 @@ source "${ZINIT_HOME}/zinit.zsh"
 
 zinit ice depth=1; zinit light romkatv/powerlevel10k
 
-eval "$(/opt/homebrew/bin/brew shellenv)"
-eval "$(zoxide init zsh)"
-eval "$(fzf --zsh)"
+# evalcache: cache the output of `eval "$(tool init)"` calls so each shell start
+# doesn't spawn the tool. Invalidate with `_evalcache_clear` after upgrading a tool.
+zinit light mroth/evalcache
+
+_evalcache /opt/homebrew/bin/brew shellenv
+_evalcache zoxide init zsh
+_evalcache fzf --zsh
+# fnm is deliberately NOT cached: its output contains a per-shell multishell path
 eval "$(fnm env --use-on-cd --version-file-strategy=recursive)"
+# brew's command-not-found handler (built into brew; ~700ms uncached, so cache it)
+_evalcache brew command-not-found-init
 
 # gcloud only supports up to a specific Python minor; pin it without holding back the default python3
 export CLOUDSDK_PYTHON="$HOMEBREW_PREFIX/opt/python@3.13/bin/python3.13"
 
-zinit light Aloxaf/fzf-tab
-zinit light zsh-users/zsh-completions
-zinit light zsh-users/zsh-syntax-highlighting
-zinit light zsh-users/zsh-autosuggestions
-
-zinit snippet OMZP::1password
-zinit snippet OMZP::command-not-found
-zinit snippet OMZP::git
-
-# Load zsh-autosuggestions.
-autoload -Uz compinit && compinit
-
-zinit cdreplay -q
+# Plugins, loaded in turbo mode (after the first prompt) so they don't delay startup.
+# Order matters: completions must be in fpath before compinit; fzf-tab needs compinit
+# first; syntax-highlighting and autosuggestions last.
+# compinit runs with -C (skip compaudit, reuse the dump). After installing a tool with
+# new completions run `compinit` once (or `rm ~/.zcompdump*`).
+zinit wait lucid light-mode for \
+  blockf atpull'zinit creinstall -q .' zsh-users/zsh-completions \
+  atinit'ZINIT[COMPINIT_OPTS]=-C; zicompinit; zicdreplay' Aloxaf/fzf-tab \
+  OMZP::git \
+  OMZP::1password \
+  zsh-users/zsh-syntax-highlighting \
+  atload'_zsh_autosuggest_start' zsh-users/zsh-autosuggestions
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
 # Source the dotfiles (order matters)
-for DOTFILE in "$CHEZMOI_HOME"/configs/{functions,aliases,inputrc}; do
+for DOTFILE in "$CHEZMOI_HOME"/configs/{functions,aliases}; do
   [ -f "$DOTFILE" ] && . "$DOTFILE"
 done
 
@@ -73,8 +77,8 @@ LS_COLORS='di=1;34:fi=0:ln=31:pi=5:so=5:bd=5:cd=5:or=31'
 zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
 zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}'
 zstyle ':completion:*' menu no
-zstyle ':fzf-tab:complete:*' fzf-preview 'ls --color $realpath'
-zstyle ':fzf-tab:complete:__zoxide_z:*' fzf-preview 'ls --color $realpath'
+zstyle ':fzf-tab:complete:*' fzf-preview 'eza -1 --color=always $realpath'
+zstyle ':fzf-tab:complete:__zoxide_z:*' fzf-preview 'eza -1 --color=always $realpath'
 
 # GH_TOKEN lives in 1Password. Fetch it lazily on first `gh` use instead of on every
 # shell start (the `op` round-trip was the main startup delay). Inherited values are kept.
@@ -86,28 +90,17 @@ gh() {
   [ -n "$GH_TOKEN" ] || gh_token
   command gh "$@"
 }
+
 export PATH=/opt/homebrew/opt/sqlite/bin:$PATH
-
-# bun completions
-[ -s "/Users/jordan/.bun/_bun" ] && source "/Users/jordan/.bun/_bun"
-
-# bun
-export BUN_INSTALL="$HOME/.bun"
-export PATH="$BUN_INSTALL/bin:$PATH"
-
-# ruby
-if [ -d "/opt/homebrew/opt/ruby/bin" ]; then
-  export PATH=/opt/homebrew/opt/ruby/bin:$PATH
-  export PATH=`gem environment gemdir`/bin:$PATH
-fi
 
 export ANDROID_HOME=$HOME/Library/Android/sdk
 export PATH=$PATH:$ANDROID_HOME/emulator
 export PATH=$PATH:$ANDROID_HOME/platform-tools
 
+# go (Homebrew's go knows its own GOROOT; only GOPATH/bin is needed on PATH)
 export GOPATH=$HOME/go
-export GOROOT="$(brew --prefix golang)/libexec"
-export PATH="$PATH:${GOPATH}/bin:${GOROOT}/bin"
+export PATH="$PATH:${GOPATH}/bin"
+
 # pnpm
 export PNPM_HOME="$HOME/Library/pnpm"
 case ":$PATH:" in

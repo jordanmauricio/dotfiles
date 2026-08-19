@@ -7,7 +7,7 @@ These dotfiles are managed by [Chezmoi](https://www.chezmoi.io/).
 ```bash
 sudo softwareupdate -i -a
 xcode-select --install
-sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply jordanmauricio`
+sh -c "$(curl -fsLS get.chezmoi.io)" -- -b "$HOME/bin" init --apply jordanmauricio
 ```
 
 ### Manual step required for 1Password
