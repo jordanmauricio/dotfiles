@@ -40,7 +40,10 @@ Checked on this machine, 2026-08-19. Recorded so we don't re-research.
 | Installed agents | `codex` 0.148.0 (from `packages.yaml → nodes: @openai/codex`), `opencode`. No gemini/qwen |
 | `skills` CLI agent targets | ~80, incl. `claude-code`, `codex`, `gemini-cli`, `qwen-code`, `opencode`, `crush`, `cursor`, `zed`, `windsurf`, `goose`, `universal` |
 | Multi-agent flag syntax | **Repeated** `-a x -a y`. Comma-separated (`-a x,y`) is rejected as one invalid name |
-| Universal skills dir | project `.agents/skills/` (verified) · global `~/.config/agents/skills/` (per docs, **unverified**; Matt's dev script uses `~/.agents/skills` — confirm at install time) |
+| Universal skills dir | project `.agents/skills/` · global **`~/.agents/skills/`** (verified 2026-08-19 by install; the docs' `~/.config/agents/skills` is **wrong** — it was created empty and unused) |
+| Link topology | `~/.claude/skills/*` are symlinks into `~/.agents/skills/*`, which holds **real copies** of the repo. The canonical copy is `~/.agents/skills`, *not* the repo — repo edits need a re-add / `skills update -g` to propagate |
+| `--all` is a trap | Shorthand for `--skill '*' --agent '*'`; it **overrides** an explicit `-a` and installs into ~50 agent dirs under `$HOME`. Use `-s '*' -a claude-code -a codex -g -y` |
+| Codex skills support | Codex 0.148.0 has no skills entry in `config.toml` and no skill feature flag. Whether it reads `~/.agents/skills` is **unverified** |
 | Codex resolution | `-a codex` collapses into the universal dir; one tree serves Codex, OpenCode, Gemini CLI |
 | Claude Code skills dir | `~/.claude/skills/` — a loose skill dir loads under its **bare** name (that's how `hunk-review` works) |
 | `~/.claude/skills/<name>/` | Also a plugin root: `claude plugin init <name>` scaffolds there, auto-loads as `<name>@skills-dir` |
@@ -73,7 +76,7 @@ Three tiers of scope:
 | Tier | Lives in | Scope | Tracked |
 |---|---|---|---|
 | Curated set | `~/projects/skills` | global, every repo | public git |
-| Local / work | `~/.claude/skills/<name>/`, `~/.config/agents/skills/<name>/` | this machine | untracked — the `~/.zshrc.local` of skills |
+| Local / work | `~/.claude/skills/<name>/`, `~/.agents/skills/<name>/` | this machine | untracked — the `~/.zshrc.local` of skills |
 | Project | `<repo>/.claude/skills/`, `<repo>/.agents/skills/` | one repo | that repo |
 
 ## Repo layout — `~/projects/skills`
@@ -163,7 +166,7 @@ No bespoke link script — the repo is just another skills.sh source:
 
 ```bash
 # from the local path while iterating
-npx skills@latest add ~/projects/skills --all -g -a claude-code -a codex
+npx skills@latest add ~/projects/skills -s '*' -a claude-code -a codex -g -y
 
 # once pushed
 npx skills@latest add jordanmauricio/skills --all -g -a claude-code -a codex
@@ -255,7 +258,6 @@ gets the content. Worth doing for `docs/tooling.md` at the same time — right n
 
 ## Open questions
 
-- Real global path for the universal target — settle at step 3.
 - Whether `wayfinder` earns its place, or whether `grill-with-docs` covers everything in practice.
 - Work-scoped skills: drop-in untracked dirs, or a private pack behind
   `{{ if .isWorkLaptop }}`? Defer until there are more than two.
