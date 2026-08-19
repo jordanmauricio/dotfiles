@@ -10,10 +10,6 @@
 
 {{- $gpgGit := promptStringOnce . "gpgGit" "Paste the SSH public key used for git commit signing (1Password SSH agent)" -}}
 
-{{- $opItemGPG := promptStringOnce . "opItemGPG" "Copy your 1password item key here" -}}
-
-{{- $gpgPassphrase := promptStringOnce . "gpgPassphrase" "Copy your gpg passphrase key here" -}}
-
 sourceDir = "{{ .chezmoi.homeDir }}/projects/dotfiles"
 
 [data]
@@ -23,8 +19,6 @@ sourceDir = "{{ .chezmoi.homeDir }}/projects/dotfiles"
     computerName = {{ $givenName | quote }}
     isWorkLaptop = {{ $isWorkLaptop | quote }}
     gpgGit = {{ $gpgGit | quote }}
-    opItemGPG = {{ $opItemGPG | quote }}
-    gpgPassphrase = {{ $gpgPassphrase | quote }}
 
 [edit]
     command = "code"
