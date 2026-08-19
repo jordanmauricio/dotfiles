@@ -2,12 +2,20 @@
 
 set -eu
 
-# Ask for the administrator password upfront
+# Nothing to do if every pre-requisite is already present (re-runs after edits to this
+# script are then a no-op instead of prompting for sudo).
+if command -v curl >/dev/null && command -v brew >/dev/null && command -v cargo >/dev/null && command -v op >/dev/null; then
+  echo "pre-requisites already installed, skipping"
+  exit 0
+fi
+
+# Ask for the administrator password upfront (needed by the Homebrew installer)
 sudo -v
 
 # Keep-alive: update existing `sudo` time stamp until this script has finished
-while true; do sudo -v; sleep 60; done & 
-echo $! > /tmp/sudo_loop.pid
+while true; do sudo -v; sleep 60; done &
+SUDO_LOOP_PID=$!
+trap 'kill "$SUDO_LOOP_PID" 2>/dev/null' EXIT
 
 # Install curl if it's not already installed
 if ! command -v curl >/dev/null; then
