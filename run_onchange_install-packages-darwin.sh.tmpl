@@ -33,8 +33,17 @@ cask {{ . | quote }}
 cask {{ . | quote }}
 {{ end -}}
 {{ end -}}
-{{ range .packages.darwin.vscode -}}
-vscode {{ . | quote }}
-{{ end -}}
 EOF
+
+# VS Code extensions are installed here rather than as brew bundle `vscode` lines.
+# `code --install-extension` returns before VS Code has finished rewriting
+# ~/.vscode/extensions/extensions.json, so the back-to-back invocations brew bundle
+# makes race each other and fail with ENOTEMPTY / EntryNotFound / "Cannot read the
+# extension". One invocation is atomic, resolves shared dependencies (remote-ssh pulls
+# in remote-ssh-edit) exactly once, and skips whatever is already installed.
+vscode_args=()
+{{ range .packages.darwin.vscode -}}
+vscode_args+=(--install-extension {{ . | quote }})
+{{ end -}}
+code "${vscode_args[@]}"
 {{ end -}}
