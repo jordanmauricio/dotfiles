@@ -13,7 +13,7 @@
 	trustctime = false
 	autocrlf = input
 	untrackedCache = true
-	pager = diff-so-fancy | less --tabs=4 -RFX
+	pager = delta
 	ignorecase = false
 
 [credential]
@@ -21,6 +21,13 @@
 
 [credential "https://github.com"]
     helper = !op read op://Personal/GitHub/password
+
+[interactive]
+	diffFilter = delta --color-only
+
+[delta]
+	navigate = true
+	line-numbers = true
 
 [pull]
 	rebase = false
@@ -98,8 +105,9 @@
 [commit]
 	gpgsign = true
 
-[includeIf "gitdir:~/Projects/kramphub/"]
-	path = ~/Projects/kramphub/mono/.github/config
+# work repos: use work identity (file is chezmoi-managed, see private_dot_config/private_git/work.tmpl)
+[includeIf "gitdir:~/projects/kramp/"]
+	path = ~/.config/git/work
 
 [diff]
 	renames = copies

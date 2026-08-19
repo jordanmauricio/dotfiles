@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Overwrites
-alias ls="ls --color"
+alias ls="eza"
 alias cat="bat"
 alias cd="z"
 
@@ -22,13 +22,11 @@ alias aliases="alias | sed 's/=.*//'"
 alias functions="declare -f | grep '^[a-z].* ()' | sed 's/{$//'"
 alias paths='echo -e ${PATH//:/\\n}'
 
-alias l="ls -lahA $LS_COLORS $LS_TIMESTYLEISO $LS_GROUPDIRSFIRST"
-alias ll="ls -lA $LS_COLORS"
-alias lt="ls -lhAtr $LS_COLORS $LS_TIMESTYLEISO $LS_GROUPDIRSFIRST"
-alias ld="ls -ld $LS_COLORS */"
+alias l="eza -lah --group-directories-first --time-style=long-iso --git"
+alias ll="eza -la"
+alias lt="eza -lah --sort=modified --group-directories-first --time-style=long-iso"
+alias ld="eza -ld */"
 alias lp="stat -c '%a %n' *"
-
-unset LS_COLORS LS_TIMESTYLEISO LS_GROUPDIRSFIRST
 
 alias ..="z .."
 alias ...="z ../.."

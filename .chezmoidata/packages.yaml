@@ -3,33 +3,42 @@ packages:
     taps:
     - "oven-sh/bun"
     brews:
-    # - "1password-cli", retrieved from pre-reqs
     - "bat"
+    - "bottom" # btm, top/gtop replacement
     - "coreutils"
     - "croc"
+    - "git-delta" # git pager (brew name; binary is `delta`)
     - "dockutil"
+    - "dust" # du replacement
+    - "eza" # ls replacement
     - "fastlane" # for rn
     - "ffmpeg"
+    - "fd"
+    - "firebase-cli"
     - "fnm"
     - "fzf"
     - "gh"
     - "gnu-sed"
-    - "golang"
+    - "go"
     - "grep"
     - "grip"
+    - "herdr"
+    - "hunk" # git diff TUI, used by hdiff/hshow and chezmoi diff pager
     - "httpie"
     - "imagemagick"
     - "jq"
     - "mackup"
     - "nano"
     - "ncdu"
-    - "nvm" # for rn
+    - "openjdk" # android studio
     - "oven-sh/bun/bun"
     - "pandoc"
     - "poppler"
-    - "python"
+    - "python" # latest, default python3
+    - "python@3.13" # pinned for gcloud (CLOUDSDK_PYTHON in .zshrc)
     - "rbenv" # for rn
     - "rclone"
+    - "ripgrep"
     - "rmlint"
     - "rsync"
     - "ssh-copy-id"
@@ -37,13 +46,15 @@ packages:
     - "topgrade"
     - "tree"
     - "unar"
+    - "uv"
     - "watchman" # for rn
     - "webp"
     - "wget"
     - "yt-dlp" #youtube
     - "zoxide"
     casks:
-    # - "1password", retrieved from pre-reqs
+    - "1password" # also installed by pre-req script
+    - "1password-cli" # cask, not formula; also installed by pre-req script
     - "nikitabobko/tap/aerospace"
     - "affinity"
     - "betterdisplay"
@@ -51,8 +62,9 @@ packages:
     - "cyberduck"
     - "figma"
     - "font-jetbrains-mono-nerd-font"
-    - "ghostty"
     - "gcloud-cli"
+    - "ghostty"
+    - "hiddenbar"
     - "google-chrome"
     - "google-chrome@canary"
     - "imageoptim"
@@ -66,6 +78,7 @@ packages:
     - "vlc"
     - "webstorm"
     - "whatsapp"
+    - "yaak"
     - "zed"
     - "zen"
     - "zulu@17" # for rn
@@ -84,9 +97,11 @@ packages:
     - "jless"
     nodes:
     - "@antfu/ni"
-    - "gtop"
+    - "@mermaid-js/mermaid-cli"
+    - "@openai/codex"
     - "npm"
     - "npm-check-updates"
+    - "nx"
     - "pnpm"
     - "yarn"
     vscode:
@@ -94,7 +109,6 @@ packages:
     - "dbaeumer.vscode-eslint"
     - "esbenp.prettier-vscode"
     - "DavidAnson.vscode-markdownlint"
-    - "github.copilot"
     - "redhat.vscode-yaml"
     - "bradlc.vscode-tailwindcss"
     - "ms-azuretools.vscode-docker"
@@ -115,3 +129,16 @@ packages:
     - "sdras.night-owl"
     - "enkia.tokyo-night"
     - "pmndrs.pmndrs"
+    - "anthropic.claude-code"
+    - "docker.docker"
+    - "figma.figma-vscode-extension"
+    - "hashicorp.terraform"
+    - "hediet.vscode-drawio"
+    - "ms-azuretools.vscode-containers"
+    - "ms-vscode-remote.remote-containers"
+    - "ms-vscode-remote.remote-ssh"
+    - "ms-vscode-remote.remote-ssh-edit"
+    - "ms-vscode.remote-explorer"
+    - "oxc.oxc-vscode"
+    - "sharat.vscode-brewfile"
+    - "unifiedjs.vscode-mdx"

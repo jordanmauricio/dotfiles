@@ -31,8 +31,7 @@ fi
 
 # Install password manager if it's not already installed
 if ! command -v op >/dev/null; then
-  brew install --cask 1password
-  brew install 1password-cli
+  brew install --cask 1password 1password-cli
 
   echo "1Password has been installed. Perform the manual setup to integrate them as defined in the readme. Afterwards, press any key to continue."
   read -n 1 -s -r
