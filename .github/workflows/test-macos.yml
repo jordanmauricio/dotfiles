@@ -42,6 +42,13 @@ jobs:
     runs-on: macos-latest
     timeout-minutes: 180
 
+    # GitHub's *default* shell is `bash -e {0}` — no pipefail. Every step below pipes
+    # into `tee`, so without this the step's exit status is tee's and real failures are
+    # silently swallowed. Naming the shell explicitly gets `-eo pipefail`.
+    defaults:
+      run:
+        shell: bash
+
     env:
       # Scheduled runs get no `inputs`, so the defaults are spelled out here too.
       CASK_MODE: ${{ inputs.cask_mode || 'fetch' }}
@@ -59,7 +66,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Set up log file
         run: |
@@ -154,16 +161,23 @@ jobs:
         id: init
         run: |
           {
-            chezmoi init \
-              --source="$HOME/projects/dotfiles" \
-              --no-tty \
-              --promptString "name=$CI_NAME" \
-              --promptString "email=$CI_EMAIL" \
-              --promptString "workEmail=$CI_WORK_EMAIL" \
-              --promptString "computerName=$CI_COMPUTER_NAME" \
-              --promptString "gpgGit=$CI_SIGNING_KEY" \
-              --promptBool "isWorkLaptop=$IS_WORK_LAPTOP" \
-              < /dev/null
+            # Seed the answers to .chezmoi.toml.tmpl's prompts rather than passing
+            # --promptString: that flag is keyed by the *prompt text*, so it breaks
+            # silently whenever a question is reworded. promptStringOnce/promptBoolOnce
+            # consult an existing [data] table first, and that is keyed by the stable
+            # variable name. A prompt added later with no answer here still fails
+            # loudly with an EOF error, which is what we want.
+            mkdir -p "$HOME/.config/chezmoi"
+            cat > "$HOME/.config/chezmoi/chezmoi.toml" <<EOF
+          [data]
+              name = "$CI_NAME"
+              email = "$CI_EMAIL"
+              workEmail = "$CI_WORK_EMAIL"
+              computerName = "$CI_COMPUTER_NAME"
+              isWorkLaptop = $IS_WORK_LAPTOP
+              gpgGit = "$CI_SIGNING_KEY"
+          EOF
+            chezmoi init --source="$HOME/projects/dotfiles" --no-tty < /dev/null
             echo "::group::rendered chezmoi.toml"
             cat "$HOME/.config/chezmoi/chezmoi.toml"
             echo "::endgroup::"
@@ -263,7 +277,7 @@ jobs:
 
       - name: Upload full log
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: bootstrap-log
           path: ${{ runner.temp }}/ci-logs/
