@@ -67,6 +67,8 @@
 	sts = status -sb
 	unstage = reset --hard HEAD
 	ggpush = git push origin "$(git_current_branch)"
+	hdiff = -c core.pager=\"hunk pager\" diff
+	hshow = -c core.pager=\"hunk pager\" show
 
 [color]
 	ui = auto
