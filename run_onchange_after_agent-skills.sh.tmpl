@@ -1,0 +1,28 @@
+{{ if eq .chezmoi.os "darwin" -}}
+#!/usr/bin/env bash
+# Install the curated agent skill packs. Re-runs whenever .chezmoidata/agents.yaml changes.
+#
+# Skills land as real copies in ~/.agents/skills; ~/.claude/skills symlinks to them.
+# Editing ~/projects/skills does NOT propagate until this runs again.
+set -euo pipefail
+
+command -v npx >/dev/null 2>&1 || { echo "agent-skills: npx not found, skipping" >&2; exit 0; }
+
+AGENT_ARGS=()
+{{ range .agents.targets -}}
+AGENT_ARGS+=(-a {{ . | quote }})
+{{ end }}
+{{ range .agents.packs }}
+if git ls-remote "https://github.com/{{ . }}.git" >/dev/null 2>&1; then
+  echo "agent-skills: installing {{ . }}"
+  npx --yes skills@latest add {{ . | quote }} -s '*' "${AGENT_ARGS[@]}" -g -y \
+    || echo "agent-skills: install of {{ . }} failed, continuing" >&2
+else
+  echo "agent-skills: {{ . }} unreachable, skipping" >&2
+fi
+{{ end }}
+{{- if lookPath "claude" }}
+# Claude-native path: namespacing, subagents, eval, token accounting.
+claude plugin marketplace add jordanmauricio/skills --scope user 2>/dev/null || true
+{{- end }}
+{{ end -}}

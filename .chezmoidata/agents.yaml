@@ -1,0 +1,12 @@
+# Agent skill packs. See docs/skills.md for the plan and ~/projects/skills for the source.
+#
+# `npx skills` is used deliberately instead of a global install: it needs no entry in
+# packages.yaml -> nodes:, and it is the only thing that knows the ~80 agent skill paths.
+agents:
+  # Repeated -a flags. NEVER use --all: it is shorthand for --agent '*' and silently
+  # overrides these, installing into ~50 agent directories under $HOME.
+  targets:
+    - claude-code
+    - codex
+  packs:
+    - jordanmauricio/skills
