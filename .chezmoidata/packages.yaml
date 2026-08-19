@@ -1,10 +1,10 @@
 packages:
   darwin:
-    # third-party taps: installed AND trusted (Homebrew >= 6 refuses untrusted taps)
+    # third-party taps: installed AND trusted (Homebrew >= 6 refuses untrusted taps).
+    # terraform left core in 2023 (BSL licence) and aerospace is tap-only; everything else is core.
     taps:
     - "hashicorp/tap"
     - "nikitabobko/tap"
-    - "oven-sh/bun"
     brews:
     - "bat"
     - "bottom" # btm, top/gtop replacement
@@ -34,7 +34,7 @@ packages:
     - "nano"
     - "ncdu"
     - "openjdk" # android studio
-    - "oven-sh/bun/bun"
+    - "bun"
     - "pandoc"
     - "poppler"
     - "python" # latest, default python3
