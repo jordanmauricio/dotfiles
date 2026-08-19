@@ -45,6 +45,8 @@ Checked on this machine, 2026-08-19. Recorded so we don't re-research.
 | Claude Code skills dir | `~/.claude/skills/` — a loose skill dir loads under its **bare** name (that's how `hunk-review` works) |
 | `~/.claude/skills/<name>/` | Also a plugin root: `claude plugin init <name>` scaffolds there, auto-loads as `<name>@skills-dir` |
 | Install mode | Default is **symlink into a canonical copy**; `--copy` opts out. Single-source-of-truth is the tool's own default |
+| Local path as source | Works — `npx skills add ./path` reports "Local path validated" |
+| **Discovery depth limit** | `SKILL.md` must sit **at most 5 path segments** below the source root. `packs/core/skills/mine/flow/SKILL.md` (5) is found; `packs/core/skills/vendor/mattpocock/tdd/SKILL.md` (6) is **silently skipped**. `--full-depth` does **not** rescue it |
 | Lockfile | `skills-lock.json` per project: `source`, `sourceType`, `skillPath`, `computedHash`. `skills experimental_install` restores it |
 | Claude marketplace | Multi-plugin layout with plugins in subdirs **validates** (`claude plugin validate`), incl. arbitrarily nested `skills/` paths |
 | Useful Claude CLI | `plugin details <name>` (projected **token cost**), `plugin validate`, `plugin eval`, `plugin tag`, `marketplace add <url\|path\|repo> --scope user\|project\|local --sparse` |
@@ -83,7 +85,7 @@ skills/
 │   │   ├── .claude-plugin/plugin.json  the only Claude-specific file in the pack
 │   │   ├── skills/
 │   │   │   ├── mine/<name>/SKILL.md
-│   │   │   └── vendor/<owner>/<name>/  pinned, never hand-edited
+│   │   │   └── vendor/<name>/SKILL.md  pinned, never hand-edited
 │   │   └── agents/                     Claude subagents (do not port — see Portability)
 │   └── web/                            opt-in per project
 ├── .claude-plugin/marketplace.json     plugins: [{ name: jordan-core, source: "./packs/core" }]
@@ -119,7 +121,7 @@ vendor:
 ```
 
 `scripts/sync-vendor.sh` shallow-clones each `ref`, copies the listed dirs into
-`packs/<into>/skills/vendor/<owner>/<name>/`, and stamps provenance. Bump a `ref`, re-run,
+`packs/<into>/skills/vendor/<name>/`, and stamps provenance. Bump a `ref`, re-run,
 read the `git diff`. Same loop as editing `packages.yaml` then `chezmoi apply`.
 
 > **The fork rule.** Never hand-edit anything under `vendor/`. It is pristine and
@@ -243,6 +245,11 @@ gets the content. Worth doing for `docs/tooling.md` at the same time — right n
 - **Codex plugin marketplaces are parked, not rejected.** If Codex plugins turn out to carry
   skills, one repo can serve both systems: `.claude-plugin/marketplace.json` and
   `.agents/plugins/marketplace.json` can point at the same `packs/` tree.
+- **Never nest deeper than `packs/<pack>/skills/<group>/<name>/SKILL.md`.** That is exactly
+  the 5-segment discovery limit. An `<owner>` directory under `vendor/` pushes it to 6 and
+  the skill vanishes from `npx skills` with no warning — it still works as a Claude plugin,
+  so the failure is Codex-only and silent. Provenance lives in `vendor.yaml` and the
+  sync-stamped header, not in the directory name.
 - **Watch the token budget.** Every skill description loads at session start. Re-run
   `claude plugin details` after each curation change.
 
