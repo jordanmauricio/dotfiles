@@ -81,12 +81,16 @@ Source dir is **`~/projects/dotfiles`** (set via `sourceDir`; binary at `~/bin/c
 ```
 chezmoi status          # what would change           chezmoi apply [--force]   # write + run changed scripts
 chezmoi diff            # builtin diff → hunk pager   chezmoi verify            # exit 0 = $HOME matches source
+chezmoi apply --no-pager                             # REQUIRED non-interactively: `apply -v` blocks on the pager
 chezmoi doctor          # when anything is weird      chezmoi re-add <file>     # pull a live edit back (NOT for .tmpl files)
 chezmoi cat ~/.zshrc    # render a target             chezmoi execute-template < x.tmpl
 ```
 
 Rules that bite:
 - **`run_once_*` scripts are keyed by content hash** — any edit makes them run again on next apply. Check `chezmoi status` for ` R` rows first; `--exclude=scripts` skips them.
+- **Never run `chezmoi apply -v` unattended.** Verbose apply pipes its diff through `hunk` and waits for a
+  keypress; killed mid-run it can leave some `run_onchange_*` scripts recorded as done and others not. Use
+  `--no-pager`, and check `chezmoi status` for leftover ` R` rows afterwards.
 - `run_onchange_*` re-run when their rendered content changes (so editing `packages.yaml` re-runs `brew bundle` — that's intended; it's `--no-upgrade` and idempotent).
 - Disable a script by renaming to `skiprun_*` (ignored by `.chezmoiignore`).
 - Anything at the source root that isn't for `$HOME` must be in `.chezmoiignore` (`README.md`, `docs`, `storage`, `configs`, …).
@@ -113,4 +117,6 @@ Rules that bite:
 6. `brew bundle` fails on a tap → `brew trust --tap <tap>` and add it to `taps:`.
 7. `gh` unauthenticated → run `gh` once (lazy token) or `gh_token`; `op signin` if 1Password CLI isn't unlocked.
 8. Shell slow again → `time zsh -i -c exit`; anything > 0.2 s, look for new sync `eval`s in `.zshrc`/`.zshrc.local`.
-9. `chezmoi diff` "hangs" → it's paging through `hunk`; `q` to quit, or `--no-pager`.
+9. `chezmoi diff` **or `chezmoi apply -v`** "hangs" → it's paging through `hunk`. `apply -v` sends its
+   diffs through the same `[diff] pager`, so it blocks on a keypress *before* running any script, with no
+   output to show why. `q` to quit; pass `--no-pager` in scripts, CI, or any agent-driven run.
