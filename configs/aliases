@@ -18,6 +18,7 @@ alias g="git"
 
 alias aliases="alias | sed 's/=.*//'"
 alias functions="declare -f | grep '^[a-z].* ()' | sed 's/{$//'"
+alias tools="bat --style=plain ~/projects/dotfiles/docs/tooling.md"   # machine tooling reference
 alias paths='echo -e ${PATH//:/\\n}'
 
 alias l="eza -lah --group-directories-first --time-style=long-iso --git"

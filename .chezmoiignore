@@ -1,5 +1,6 @@
 # repo-only files, never applied to $HOME
 README.md
+docs
 CLAUDE.md
 LICENSE
 storage

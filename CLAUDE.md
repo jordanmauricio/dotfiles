@@ -2,6 +2,12 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Machine tooling reference
+
+@docs/tooling.md
+
+The file above (tool map, language rules, secrets policy, git aliases, chezmoi workflow, shell internals, troubleshooting) is the shared reference for both Jordan and Claude; it is also imported by the chezmoi-managed `~/.claude/CLAUDE.md`. Keep it — not this file — updated when tooling conventions change. The sections below are repo-structure specifics only.
+
 ## What this repo is
 
 A macOS dotfiles repo managed by [chezmoi](https://www.chezmoi.io/). This directory is the chezmoi **source** state (`sourceDir` in `.chezmoi.toml.tmpl` points chezmoi at `~/projects/dotfiles` instead of the default `~/.local/share/chezmoi`); the files here are templated/renamed and applied into `$HOME`. There is no build, lint, or test suite — verification is done with chezmoi's own commands.
