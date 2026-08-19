@@ -306,6 +306,26 @@ jobs:
           path: ${{ runner.temp }}/ci-logs/
           retention-days: 30
 
+      - name: Close the failure issue on a green run
+        if: success()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          # Keep the open/closed state of the dotfiles-ci issue an honest signal of
+          # current health. Without this a fixed break stays open forever and the next
+          # real failure is filed as a comment on it, which is easy to miss.
+          open_issue="$(gh issue list --label dotfiles-ci --state open --limit 1 \
+                          --json number --jq '.[0].number')"
+          if [ -n "$open_issue" ]; then
+            gh issue comment "$open_issue" \
+              --body "Bootstrap is green again as of [\`${{ github.run_id }}\`]($RUN_URL) (cask mode \`$CASK_MODE\`). Closing."
+            gh issue close "$open_issue"
+            echo "Closed #$open_issue"
+          else
+            echo "No open dotfiles-ci issue to close."
+          fi
+
       - name: Report failure as an issue
         if: failure()
         env:
