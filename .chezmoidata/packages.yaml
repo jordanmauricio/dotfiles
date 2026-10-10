@@ -1,13 +1,17 @@
 packages:
   darwin:
     # third-party taps: installed AND trusted (Homebrew >= 6 refuses untrusted taps).
-    # terraform left core in 2023 (BSL licence) and aerospace is tap-only; everything else is core.
+    # terraform left core in 2023 (BSL licence), aerospace and the Turso Cloud CLI are tap-only
+    # (core `turso` is the unrelated Limbo SQL shell); everything else is core.
     taps:
     - "hashicorp/tap"
     - "nikitabobko/tap"
+    - "tursodatabase/tap"
+    - "libsql/sqld" # sqld, a dependency of tursodatabase/tap/turso
     brews:
     - "bat"
     - "bottom" # btm, top/gtop replacement
+    - "cloudflare-wrangler" # `wrangler`: Cloudflare Workers CLI (tome API); projects also pin it as a devDependency
     - "coreutils"
     - "croc"
     - "git-delta" # git pager (brew name; binary is `delta`)
@@ -46,6 +50,7 @@ packages:
     - "ssh-copy-id"
     - "hashicorp/tap/terraform"
     - "topgrade"
+    - "tursodatabase/tap/turso" # Turso Cloud CLI (tome content releases)
     - "tree"
     - "unar"
     - "uv"
