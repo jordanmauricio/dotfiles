@@ -16,11 +16,12 @@
 	pager = delta
 	ignorecase = false
 
-[credential]
-	helper = /opt/homebrew/bin/op
-
+# GitHub HTTPS auth uses the same 1Password token as the gh() wrapper in .zshrc.
+# The empty helper drops the system osxkeychain helper so the token is never copied
+# into the keychain. Git calls helpers with get/store/erase; only get has work to do.
 [credential "https://github.com"]
-    helper = !op read op://Personal/GitHub/password
+	helper =
+	helper = "!f() { [ \"$1\" = get ] || exit 0; echo username=jordanmauricio; echo \"password=$(op item get tzcbernwu4gktzonwchcbgv5km --reveal --fields label=token)\"; }; f"
 
 [interactive]
 	diffFilter = delta --color-only

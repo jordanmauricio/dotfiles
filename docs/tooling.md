@@ -52,7 +52,7 @@ Keybindings: `^p`/`^n` = history prefix search. Tab completion is fzf-tab with `
 
 - Everything comes from **1Password** (`op`). The repo is public; templates must only contain `{{ .name }}`-style placeholders or `op` lookups, never values.
 - `GH_TOKEN` is fetched lazily on the first `gh` call (`gh()` wrapper); `gh_token` exports it for other tools in the current shell.
-- Git credentials: `op` credential helper + `op read op://Personal/GitHub/password`. Commit signing: **SSH via 1Password** (`gpg.format = ssh`, `op-ssh-sign`). There is no GPG anywhere.
+- Git credentials: a `[credential "https://github.com"]` helper in `~/.config/git/config` reads the same 1Password token as `gh_token` (no keychain copy). Commit signing: **SSH via 1Password** (`gpg.format = ssh`, `op-ssh-sign`). There is no GPG anywhere.
 - Machine-local / work-only env (project IDs, cluster names, anything with an employer name in it) goes in **`~/.zshrc.local`** — sourced last, untracked, never committed.
 - Before committing: `git diff` and grep for emails, tokens, `ssh-`, work identifiers.
 
