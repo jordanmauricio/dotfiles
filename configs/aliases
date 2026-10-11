@@ -3,7 +3,10 @@
 # Overwrites
 alias ls="eza"
 alias cat="bat"
-alias cd="z"
+# Not in Claude Code's shells: they copy this alias but not zoxide's chpwd hook, so every cd
+# trips zoxide's "possible configuration issue" check; agents also want exact paths, not
+# frecency jumps.
+[[ -z $CLAUDECODE ]] && alias cd="z"
 
 # Shortcuts
 alias reloadzsh="source ~/.zshrc"

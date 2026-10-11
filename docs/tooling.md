@@ -13,7 +13,7 @@ Everything here is installed by `chezmoi apply` from `.chezmoidata/packages.yaml
 |---|---|---|
 | `ls` | `eza` | `ls` is aliased. `l` (long, all, git status), `ll`, `lt` (by mtime), `ld` (dirs only) |
 | `cat` | `bat` | aliased; `bat -p` for plain, `bat -l yaml` to force a language |
-| `cd` | `z` (zoxide) | `cd`/`..`/`...`/`-` are aliased to `z`; `zz` = previous dir |
+| `cd` | `z` (zoxide) | `cd`/`..`/`...`/`-` are aliased to `z` (`cd` stays the builtin in Claude Code shells); `zz` = previous dir |
 | `find` | `fd` | `fd pattern [path]`; respects .gitignore; `fd -H` hidden, `-t f/d`, `-e ext`, `-x cmd` |
 | `grep -r` | `rg` (ripgrep) | `rg pattern [path]`; `-n` line numbers (default), `-t js`, `-g '!dist'`, `-l` files only |
 | `du -sh *` | `dust` | `dust` (tree), `dust -d 1` |
