@@ -35,6 +35,7 @@ packages:
     - "imagemagick"
     - "jq"
     - "mackup"
+    - "mkcert" # trusted certificates for local HTTPS (tome web app against dev, #104)
     - "nano"
     - "ncdu"
     - "openjdk" # android studio
