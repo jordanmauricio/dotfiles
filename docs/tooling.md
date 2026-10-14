@@ -72,7 +72,7 @@ Identity: personal by default; anything under `~/projects/kramp/` gets `workEmai
 | `hdiff` / `hshow` | diff / show in hunk | | `patch` | plain diff, no pager |
 | `stl` | modified + untracked files | | `show-ignored` | what .gitignore hides |
 
-New branches auto-push with plain `git push` (`push.autoSetupRemote`). `pull.rebase = false`. OMZ git plugin aliases (`gst`, `gco`, `gp`, …) are also loaded.
+New branches auto-push with plain `git push` (`push.autoSetupRemote`). `branch.autoSetupMerge = simple` keeps `git switch -c foo origin/main` from tracking `main`, so the first push goes to `origin/foo`. `pull.rebase = false`. OMZ git plugin aliases (`gst`, `gco`, `gp`, …) are also loaded.
 
 ## chezmoi workflow
 
