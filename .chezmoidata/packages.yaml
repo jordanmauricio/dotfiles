@@ -82,6 +82,7 @@ packages:
     - "raycast"
     - "tableplus"
     - "ticktick"
+    - "typewhisper" # AI-powered dictation
     - "visual-studio-code"
     - "vlc"
     - "webstorm"
